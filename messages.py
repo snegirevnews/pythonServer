@@ -1,5 +1,5 @@
 import json
-import p2pServerPython.cryptotools as cryptotools
+import cryptotools as cryptotools
 
 nonce = lambda: cryptotools.generate_nodeid()
 

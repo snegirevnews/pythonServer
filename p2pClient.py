@@ -4,11 +4,11 @@ from twisted.internet.endpoints import TCP4ClientEndpoint, connectProtocol
 from twisted.internet.task import LoopingCall
 from functools import partial
 
-import p2pServerPython.cryptotools as cryptotools
-import p2pServerPython.messages as messages
+import cryptotools as cryptotools
+import messages as messages
 from time import time
-import chechBlock as chechBlock
-import BlockDB as DB
+# import chechBlock as chechBlock
+# import BlockDB as DB
 
 
 PING_INTERVAL = 1200.0 #каждые 20 минут я проверяю на активность
@@ -63,16 +63,16 @@ class MyProtocol(Protocol):
                     self.handle_PONG(line)
                 elif envelope['msgtype'] == 'addr':
                     self.handle_ADDR(line)
-                elif envelope['msgtype'] == 'getBlock':
-                    self.handle_BLOCK(line)
-                elif envelope['msgtype'] == 'checkAuth':
-                    self.handle_AUTH(line)
-                elif envelope['msgtype'] == 'correct':
-                    self.handle_CORRECT(line)
-                elif envelope['msgtype'] == 'filter':
-                    self.handle_SEARCH(line)
-                elif envelope['msgtype'] == 'searchResult':
-                    self.handle_SEARCHRESULT(line)
+                # elif envelope['msgtype'] == 'getBlock':
+                #     self.handle_BLOCK(line)
+                # elif envelope['msgtype'] == 'checkAuth':
+                #     self.handle_AUTH(line)
+                # elif envelope['msgtype'] == 'correct':
+                #     self.handle_CORRECT(line)
+                # elif envelope['msgtype'] == 'filter':
+                #     self.handle_SEARCH(line)
+                # elif envelope['msgtype'] == 'searchResult':
+                #     self.handle_SEARCHRESULT(line)
 
         #Отправка "Приветственного сообщения", чтобы другие ноды узнали обо мне
     def send_HELLO(self):
@@ -174,53 +174,53 @@ class MyProtocol(Protocol):
         self.factory.peers[self.remote_nodeid] = (addr, kind, time())
 
         #Пришел новый блок
-    def handle_BLOCK(self, block):
-        print("GET BLOCK")
-        blc= messages.read_message(block)
-        blc=blc['block']
-        if (chechBlock.CheckBlockValid(blc)):
-            pass
+    # def handle_BLOCK(self, block):
+    #     print("GET BLOCK")
+    #     blc= messages.read_message(block)
+    #     blc=blc['block']
+    #     if (chechBlock.CheckBlockValid(blc)):
+    #         pass
 
         # Пришли авторизационные данные
-    def handle_AUTH(self, auth):
-        print("GET AUTH")
-        authData = messages.read_message(auth)
-        authData = authData['auth']
-        print(authData)
-        authData = DB.chechAuthCode(authData)
+    # def handle_AUTH(self, auth):
+    #     print("GET AUTH")
+    #     authData = messages.read_message(auth)
+    #     authData = authData['auth']
+    #     print(authData)
+    #     authData = DB.chechAuthCode(authData)
+    #
+    #     if (len(authData) > 0):
+    #         print('YES,AUTH')
+    #         self.send_CORRECT('YES')
+    #     else: self.send_CORRECT('NO')
 
-        if (len(authData) > 0):
-            print('YES,AUTH')
-            self.send_CORRECT('YES')
-        else: self.send_CORRECT('NO')
-
-    def send_CORRECT(self,correct):
-        addr = messages.send_correct(self.nodeid, correct)
-        self.sendLine(addr)
-
-    def handle_CORRECT(self, correct):
-        correctData = messages.read_message(correct)
-        correctData = correctData['correct']
-        if(correctData == 'YES'):
-            CorrectAnswer = 'YES'
-            MainObj.getAuthAnswer(CorrectAnswer)
-        elif(correctData == 'NO'):
-            CorrectAnswer = 'NO'
-            MainObj.getAuthAnswer(CorrectAnswer)
-
-    def handle_SEARCH(self, filter):
-        filter = messages.read_message(filter)
-        filter = filter['filter']
-        print(filter)
-        res= DB.searchFilter(filter)
-        self.send_SEARCH(res)
-
-    def send_SEARCH(self,res):
-        result= messages.send_searchResult(self.nodeid, res)
-        self.sendLine(result)
-
-    def handle_SEARCHRESULT(self, result):
-        MainObj.recvResult(result)
+    # def send_CORRECT(self,correct):
+    #     addr = messages.send_correct(self.nodeid, correct)
+    #     self.sendLine(addr)
+    #
+    # def handle_CORRECT(self, correct):
+    #     correctData = messages.read_message(correct)
+    #     correctData = correctData['correct']
+    #     if(correctData == 'YES'):
+    #         CorrectAnswer = 'YES'
+    #         MainObj.getAuthAnswer(CorrectAnswer)
+    #     elif(correctData == 'NO'):
+    #         CorrectAnswer = 'NO'
+    #         MainObj.getAuthAnswer(CorrectAnswer)
+    #
+    # def handle_SEARCH(self, filter):
+    #     filter = messages.read_message(filter)
+    #     filter = filter['filter']
+    #     print(filter)
+    #     res= DB.searchFilter(filter)
+    #     self.send_SEARCH(res)
+    #
+    # def send_SEARCH(self,res):
+    #     result= messages.send_searchResult(self.nodeid, res)
+    #     self.sendLine(result)
+    #
+    # def handle_SEARCHRESULT(self, result):
+    #     MainObj.recvResult(result)
 
         #Метод отправки сформированного протокола
     def sendLine(self, line):

@@ -3,8 +3,8 @@ from twisted.internet.endpoints import TCP4ServerEndpoint, TCP4ClientEndpoint
 from twisted.internet.error import CannotListenError
 from twisted.internet.endpoints import connectProtocol
 
-import p2pServerPython.p2pClient as p2pClient
-from p2pServerPython.p2pClient import MyFactory, MyProtocol
+import p2pClient as p2pClient
+from p2pClient import MyFactory, MyProtocol
 
 ncfactory = MyFactory()
 def connect():
