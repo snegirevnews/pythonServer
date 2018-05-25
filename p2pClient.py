@@ -1,4 +1,4 @@
-from twisted.internet.protocol import Protocol, Factory
+from twisted.internet.protocol import Protocol, Factory, DatagramProtocol
 from twisted.internet import reactor
 from twisted.internet.endpoints import TCP4ClientEndpoint, connectProtocol
 from twisted.internet.task import LoopingCall
@@ -265,3 +265,29 @@ class MyFactory(Factory):
 def gotProtocol(p):
     p.send_HELLO()
 
+class UDPClientProtocol(DatagramProtocol):
+    def __init__(self):
+       self.peers = {}
+       self.nodeid = cryptotools.generate_nodeid()[:10]
+
+    def startProtocol(self):
+       # Called when transport is connected
+       # self.transport.connect(self.host, self.port)
+       print ("LISTEN")
+       # self.transport.write(b"hello")  # no need for address
+
+    def datagramReceived(self, data, addr):
+        print ("received %r from %s" % (data, addr))
+        entry = (addr[0],addr[1])
+        print(entry)
+        self.factory.peers[self.remote_nodeid] = entry
+        self.transport.write(b"hello")
+
+    def stopProtocol(self):
+       print ("I have lost connection and self.transport is gone!")
+       # wait some time and try to reconnect somehow?
+
+    # Possibly invoked if there is no server listening on the
+    # address to which we are sending.
+    def connectionRefused(self):
+        print ("No one listening")
