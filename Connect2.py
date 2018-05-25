@@ -8,7 +8,7 @@ from p2pClient import MyFactory, MyProtocol, UDPClientProtocol
 
 ncfactory = MyFactory()
 def connect():
-    # # host = "52.14.183.26" #адрес сервера
+    # # host = "52.14.170.246" #адрес сервера
     # host = "localhost"
     # port = 5006 #порт сервера
     #
@@ -20,7 +20,7 @@ def connect():
     #     print("[!] Address in use")
     #     raise SystemExit
 
-    t = reactor.listenUDP(5005, UDPClientProtocol("52.14.183.26", 5006))
+    t = reactor.listenUDP(5006, UDPClientProtocol())
     reactor.run()
 
 if __name__ == "__main__":
