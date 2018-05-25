@@ -266,38 +266,24 @@ def gotProtocol(p):
     p.send_HELLO()
 
 class UDPClientProtocol(DatagramProtocol):
-<<<<<<< HEAD
     def __init__(self, host, port):
        self.host = host
        self.port = port
-=======
-    def __init__(self):
->>>>>>> 5f0a82f9399bad38be08dd6064249e04f73f07e7
        self.peers = {}
        self.nodeid = cryptotools.generate_nodeid()[:10]
 
     def startProtocol(self):
        # Called when transport is connected
-<<<<<<< HEAD
        self.transport.connect(self.host, self.port)
        print ("now we can only send to host %s port %d" % (self.host, self.port))
        self.transport.write(self.nodeid.encode())  # no need for address
-=======
-       # self.transport.connect(self.host, self.port)
-       print ("LISTEN")
-       # self.transport.write(b"hello")  # no need for address
->>>>>>> 5f0a82f9399bad38be08dd6064249e04f73f07e7
 
     def datagramReceived(self, data, addr):
         print ("received %r from %s" % (data, addr))
         entry = (addr[0],addr[1])
         print(entry)
-<<<<<<< HEAD
+        print(data.decode())
         self.peers[data.decode()] = entry
-=======
-        self.factory.peers[self.remote_nodeid] = entry
-        self.transport.write(b"hello")
->>>>>>> 5f0a82f9399bad38be08dd6064249e04f73f07e7
 
     def stopProtocol(self):
        print ("I have lost connection and self.transport is gone!")
